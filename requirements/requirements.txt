@@ -1,2 +1,2 @@
-brainforge-inference-utils @ git+https://github.com/NeonGeckoCom/brainforge-inference-utils
+brainforge-inference-utils~=0.0,>=0.0.1a1
 requests
