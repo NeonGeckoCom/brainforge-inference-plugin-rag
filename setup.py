@@ -52,7 +52,7 @@ with open(path.join(BASE_PATH, "README.md"), "r") as f:
     long_description = f.read()
 
 with open(
-    path.join(BASE_PATH, "neon_inference_plugin_rag", "version.py"),
+    path.join(BASE_PATH, "brainforge_inference_plugin_rag", "version.py"),
     "r",
     encoding="utf-8",
 ) as v:
@@ -65,12 +65,12 @@ with open(
 
 
 setup(
-    name="neon-inference-plugin-rag",
+    name="brainforge-inference-plugin-rag",
     version=version,
     description="RAG retrieval and citation steps for BrainForge inference pipelines",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/NeonGeckoCom/neon-inference-plugin-rag",
+    url="https://github.com/NeonGeckoCom/brainforge-inference-plugin-rag",
     author="NeonGecko",
     author_email="developers@neon.ai",
     license="AGPL-3.0-only",
@@ -87,10 +87,10 @@ setup(
     ],
     entry_points={
         "brainforge.inference.request_steps": [
-            "neon.rag = neon_inference_plugin_rag:RagStep",
+            "brainforge.rag = brainforge_inference_plugin_rag:RagStep",
         ],
         "brainforge.inference.response_steps": [
-            "neon.citations = neon_inference_plugin_rag:ResponseParser",
+            "brainforge.citations = brainforge_inference_plugin_rag:ResponseParser",
         ],
     },
 )

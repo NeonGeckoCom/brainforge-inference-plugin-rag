@@ -16,7 +16,7 @@
 RAG retrieval and citation rewrite.
 
 `RagStep` lists providers and injects retrieved documents on the request
-pipeline. `ResponseParser` (id `neon.citations`) runs on the response pipeline:
+pipeline. `ResponseParser` (id `brainforge.citations`) runs on the response pipeline:
 it filters those documents, builds a citation completion via MCP, POSTs it
 to a configured OpenAI-compatible endpoint, and writes the annotated text
 back onto the same `UserTransaction`.
@@ -30,7 +30,6 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
-from neon_data_models.models.api.llm import LLMResponse
 
 from brainforge_inference_utils.mcp import mcp_client, mcp_tool_content_parts
 from brainforge_inference_utils.steps.base import (
@@ -59,7 +58,7 @@ class RagStep(RequestStep):
     - `rag_top_k`: Optional per-request override of configured `top_k`.
     """
 
-    id = "neon.rag"
+    id = "brainforge.rag"
 
     def __init__(self, config: Optional[dict] = None) -> None:
         resolved = dict(config or {})
@@ -252,7 +251,7 @@ class ResponseParser(ResponseStep):
     - `citations_enabled`: When false, the step is skipped.
     """
 
-    id = "neon.citations"
+    id = "brainforge.citations"
     request_context_options = (
         RequestContextOption(
             "citations_enabled",
@@ -282,9 +281,7 @@ class ResponseParser(ResponseStep):
             return "no rag documents"
         return None
 
-    async def process(
-        self, transaction: UserTransaction
-    ) -> Optional[LLMResponse]:
+    async def process(self, transaction: UserTransaction) -> None:
         documents = list(
             (transaction.request_step_context.get(RagStep.id) or {}).get("documents") or [])
         original = transaction.response.response
@@ -297,7 +294,7 @@ class ResponseParser(ResponseStep):
                     "credits": "",
                     "formatted_credits": "",
                 }
-                return None
+                return
             payload = await self._build_citation_request(
                 original, filtered, timeout)
             raw_cited = await self._complete(
@@ -310,7 +307,7 @@ class ResponseParser(ResponseStep):
                 "documents": documents,
                 "error": str(exc),
             }
-            return None
+            return
 
         transaction.response_step_context[self.id] = {
             "documents": filtered,
@@ -321,8 +318,8 @@ class ResponseParser(ResponseStep):
         history = list(transaction.response.history)
         if history and history[-1][0] == "llm":
             history[-1] = ("llm", rewritten)
-        return transaction.response.model_copy(
-            update={"response": rewritten, "history": history})
+        transaction.response.response = rewritten
+        transaction.response.history = history
 
     async def _filter_sources(
         self, response: str, documents: List[dict], timeout: float

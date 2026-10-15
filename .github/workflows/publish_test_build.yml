@@ -6,7 +6,7 @@ on:
     branches:
       - dev
     paths-ignore:
-      - 'neon_inference_plugin_rag/version.py'
+      - 'brainforge_inference_plugin_rag/version.py'
 
 jobs:
   publish_alpha_release:
@@ -14,5 +14,5 @@ jobs:
     secrets: inherit
     with:
       publish_pypi: false
-      version_file: "neon_inference_plugin_rag/version.py"
+      version_file: "brainforge_inference_plugin_rag/version.py"
       publish_prerelease: true
