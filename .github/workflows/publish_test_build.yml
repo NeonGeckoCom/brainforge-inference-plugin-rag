@@ -13,6 +13,6 @@ jobs:
     uses: neongeckocom/.github/.github/workflows/publish_alpha_release.yml@master
     secrets: inherit
     with:
-      publish_pypi: false
+      publish_pypi: true
       version_file: "brainforge_inference_plugin_rag/version.py"
       publish_prerelease: true
