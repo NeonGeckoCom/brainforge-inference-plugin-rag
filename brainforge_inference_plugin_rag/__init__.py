@@ -15,12 +15,12 @@
 
 """RAG retrieval and citation steps for BrainForge inference pipelines."""
 
-from neon_inference_plugin_rag.rag import (
+from brainforge_inference_plugin_rag.rag import (
     RagStep,
     ResponseParser,
     apply_citation_markup,
 )
-from neon_inference_plugin_rag.version import __version__
+from brainforge_inference_plugin_rag.version import __version__
 
 __all__ = [
     "RagStep",
