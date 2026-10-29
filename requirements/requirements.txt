@@ -1,2 +1,2 @@
-brainforge-inference-utils~=0.0,>=0.0.1a1
+brainforge-inference-utils~=0.0.1
 requests
