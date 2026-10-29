@@ -16,7 +16,7 @@
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from neon_inference_plugin_rag import (
+from brainforge_inference_plugin_rag import (
     ResponseParser,
     apply_citation_markup,
 )
@@ -56,7 +56,7 @@ class TestResponseParser(unittest.IsolatedAsyncioTestCase):
             request=request,
             response=make_response(text, request),
             request_context=request_context,
-            request_step_context={"neon.rag": {"documents": DOCUMENTS}},
+            request_step_context={"brainforge.rag": {"documents": DOCUMENTS}},
         )
         return transaction
 
@@ -73,16 +73,16 @@ class TestResponseParser(unittest.IsolatedAsyncioTestCase):
             step, "_complete",
             new=AsyncMock(return_value="See [1] and [3]."),
         ) as complete:
-            revised = await step.process(transaction)
+            await step.process(transaction)
 
         build.assert_awaited_once()
         complete.assert_awaited_once_with(
             {"messages": []}, transaction.request.model, 30.0)
-        self.assertIsNotNone(revised)
-        self.assertNotEqual(revised.response, "See the docs.")
-        self.assertEqual(revised.history[-1][0], "llm")
-        self.assertEqual(revised.history[-1][1], revised.response)
-        self.assertIn("Doc A", transaction.response_step_context["neon.citations"]["credits"])
+        self.assertNotEqual(transaction.response.response, "See the docs.")
+        self.assertEqual(transaction.response.history[-1][0], "llm")
+        self.assertEqual(
+            transaction.response.history[-1][1], transaction.response.response)
+        self.assertIn("Doc A", transaction.response_step_context["brainforge.citations"]["credits"])
 
     async def test_skips_without_rag_documents(self):
         step = ResponseParser(STEP_CONFIG)
@@ -116,12 +116,11 @@ class TestResponseParser(unittest.IsolatedAsyncioTestCase):
             step, "_complete",
             new=AsyncMock(side_effect=RuntimeError("nope")),
         ):
-            revised = await step.process(transaction)
+            await step.process(transaction)
 
-        self.assertIsNone(revised)
         self.assertEqual(transaction.response.response, original)
         self.assertEqual(
-            transaction.response_step_context["neon.citations"]["error"], "nope")
+            transaction.response_step_context["brainforge.citations"]["error"], "nope")
 
     def test_appends_chat_completions_to_base_url(self):
         step = ResponseParser({

@@ -13,18 +13,4 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""RAG retrieval and citation steps for BrainForge inference pipelines."""
-
-from neon_inference_plugin_rag.rag import (
-    RagStep,
-    ResponseParser,
-    apply_citation_markup,
-)
-from neon_inference_plugin_rag.version import __version__
-
-__all__ = [
-    "RagStep",
-    "ResponseParser",
-    "apply_citation_markup",
-    "__version__",
-]
+__version__ = "0.0.1"

@@ -15,26 +15,26 @@
 
 from importlib.metadata import entry_points
 
-from neon_inference_plugin_rag import RagStep
-from neon_inference_plugin_rag import ResponseParser
+from brainforge_inference_plugin_rag import RagStep
+from brainforge_inference_plugin_rag import ResponseParser
 
 def test_entry_point_loads_rag_step():
     matches = [
         ep for ep in entry_points(group="brainforge.inference.request_steps")
-        if ep.name == "neon.rag"
+        if ep.name == "brainforge.rag"
     ]
     assert len(matches) == 1
     loaded = matches[0].load()
     assert loaded is RagStep
-    assert loaded.id == "neon.rag"
+    assert loaded.id == "brainforge.rag"
 
 
 def test_entry_point_loads_citation_step():
     matches = [
         ep for ep in entry_points(group="brainforge.inference.response_steps")
-        if ep.name == "neon.citations"
+        if ep.name == "brainforge.citations"
     ]
     assert len(matches) == 1
     loaded = matches[0].load()
     assert loaded is ResponseParser
-    assert loaded.id == "neon.citations"
+    assert loaded.id == "brainforge.citations"
